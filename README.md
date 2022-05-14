@@ -1,8 +1,11 @@
-# <img src="https://github.com/fcazalet/godot-version-management/blob/main/icon.svg" width="64" height="64"> Godot Version Manager
+# <img src="https://github.com/fcazalet/godot-version-management/blob/main/icon.png" width="64" height="64"> Godot Version Manager
 
 This addon is for developpers that want a centralized place for version naming / build number and then display it in game.
+
 It allow you to configure version and build in project settings.
+
 These configurations are synchronized to all existing export of your project.
+
 Moreover configurations can be loaded for in game display.
 
 ## How to install it
@@ -19,7 +22,9 @@ Once the addon activated it add two entry in your project configuration:
 
 You can change the version and the build numbers.
 It will update all your exports versions value to the project config value.
-Then you need to reload the project (Project / Reload current project). See below section to know why you need to reload project.
+Then you need to reload the project (Project / Reload current project).
+
+See below section to know why you need to reload project.
 
 For Android exports:
 * version is version/name
@@ -52,5 +57,12 @@ The version and build numbers can be accessed for in game use like that:
 ## Why I need to reload project ?
 
 The GodotVersionManager addon update the export-presets.cfg file.
+
 Because of Godot keep in memory ExportsSettings and do not reload it from export-presets.cfg file you will need to reload your project.
+
 When project is loaded Godot load in memory the export-presets.cfg .
+
+## Support Me
+
+You to buy me a coffee ?
+<a href='https://ko-fi.com/J3J2COV54' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi3.png?v=3' border='0' alt='Buy Me a Coffee' />Buy me a coffee</a>
