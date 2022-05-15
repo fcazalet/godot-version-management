@@ -1,6 +1,6 @@
-<img src="https://github.com/fcazalet/godot-version-management/blob/main/icon.png" width="64" height="64">
-
 # Godot Version Manager
+
+<img src="https://github.com/fcazalet/godot-version-management/blob/main/icon.png" width="64" height="64">
 
 This addon is for developpers that want a centralized place for version naming / build number and then display it in game.
 
