@@ -83,7 +83,7 @@ func _update_export_presets() -> void:
 
 		# Update Windows exports configs
 		if export_config.get_value(section, "platform") == "Windows Desktop":
-			var windows_version_setting := "0." + version_setting if version_setting.split(".").size() <= 3 else version_setting
+			var windows_version_setting := version_setting + ".0" if version_setting.split(".").size() == 3 else version_setting
 			export_config.set_value(section + ".options", 'application/file_version', windows_version_setting)
 			export_config.set_value(section + ".options", 'application/product_version', windows_version_setting)
 
