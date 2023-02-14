@@ -5,6 +5,7 @@ extends EditorPlugin
 
 # Constants
 const PLUGIN_NAME := "Godot-Version-Manager"
+const EXPORTS_MAX := 100
 const DEBUG := true
 # Use same setting as https://github.com/godotengine/godot/pull/35555
 const PROJECT_VERSION_SETTING := "application/config/version"
@@ -44,8 +45,13 @@ func save_external_data() -> void:
 
 # Private methods
 func _update_export_presets() -> void:
-	var version_setting: String = ProjectSettings.get_setting(PROJECT_VERSION_SETTING)
-	var build_setting: int = ProjectSettings.get_setting(PROJECT_BUILD_SETTING)
+	var version_dict := _parse_version(
+		ProjectSettings.get_setting(PROJECT_VERSION_SETTING),
+		ProjectSettings.get_setting(PROJECT_BUILD_SETTING)
+	)
+
+	var version_setting: String = version_dict.get("version")
+	var build_setting: int = version_dict.get("build")
 
 	# If config version not changed, do not update all exports
 	if version_setting == current_version:
@@ -55,17 +61,17 @@ func _update_export_presets() -> void:
 	var err := export_config.load(EXPORT_PRESETS_FILE)
 
 	if err != OK:
-		_plugin_log('Error open ' + EXPORT_PRESETS_FILE)
+		_plugin_log('Error opening ' + EXPORT_PRESETS_FILE)
 		return
 
 	# Loop limited to 100 exports
-	for i in range(0, 100):
+	for i in range(EXPORTS_MAX):
 		var section := "preset." + str(i)
 
 		if not export_config.has_section(section):
 			break
 
-		_plugin_log("Update Export " + export_config.get_value(section, "platform"))
+		_plugin_log("Update export: '" + export_config.get_value(section, "name") + "'")
 
 		# Update Android exports configs
 		if export_config.get_value(section, "platform") == "Android":
@@ -79,13 +85,10 @@ func _update_export_presets() -> void:
 
 		# Update UWP exports configs
 		if export_config.get_value(section, "platform") == "UWP":
-			var version_dict := _parse_version(version_setting)
-
-			if version_dict.size() > 0:
-				export_config.set_value(section + ".options", 'version/major', version_dict["major"])
-				export_config.set_value(section + ".options", 'version/minor', version_dict["minor"])
-				export_config.set_value(section + ".options", 'version/build', version_dict["patch"])
-				export_config.set_value(section + ".options", 'version/revision', 0)
+			export_config.set_value(section + ".options", 'version/major', version_dict["major"])
+			export_config.set_value(section + ".options", 'version/minor', version_dict["minor"])
+			export_config.set_value(section + ".options", 'version/build', version_dict["patch"])
+			export_config.set_value(section + ".options", 'version/revision', 0)
 
 		# Update Windows exports configs
 		if export_config.get_value(section, "platform") == "Windows Desktop":
@@ -110,15 +113,34 @@ func _plugin_log(message: String) -> void:
 		print(date_string, " - ", PLUGIN_NAME, " - ", message)
 
 
-func _parse_version(version: String) -> Dictionary:
+func _parse_version(version: String, build: int) -> Dictionary:
+	var dict := {
+		"version": version,
+		"build": build if build >= 0 else 0,
+		"major": 0,
+		"minor": 0,
+		"patch": 0,
+	}
+
 	var version_split := version.split(".")
 
+	# Do not generate major.minor.patch
 	if version_split.size() < 3:
-		return {}
+		return dict
 
-	return {
-		"major": int(version_split[0]),
-		"minor": int(version_split[1]),
-		"patch": int(version_split[2]),
-	}
+	var major := int(version_split[0])
+	var minor := int(version_split[1])
+	var patch := int(version_split[2])
+
+	# Generate build number from version string ('2.3.4' == 20304)
+	if not build or build < 0:
+		dict["build"] = int(str(major) + str(minor).pad_zeros(2) + str(patch).pad_zeros(2))
+
+	dict.merge({
+		"major": major,
+		"minor": minor,
+		"patch": patch,
+	}, true)
+
+	return dict
 
