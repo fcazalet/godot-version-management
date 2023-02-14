@@ -125,15 +125,15 @@ func _parse_version(version: String, build: int) -> Dictionary:
 	var version_split := version.split(".")
 
 	# Do not generate major.minor.patch
-	if version_split.size() < 3:
+	if version_split.size() == 0:
 		return dict
 
-	var major := int(version_split[0])
-	var minor := int(version_split[1])
-	var patch := int(version_split[2])
+	var major := int(version_split[0]) if version_split.size() >= 1 else 0
+	var minor := int(version_split[1]) if version_split.size() >= 2 else 0
+	var patch := int(version_split[2]) if version_split.size() >= 3 else 0
 
 	# Generate build number from version string ('2.3.4' == 20304)
-	if not build or build < 0:
+	if build <= 0:
 		dict["build"] = int(str(major) + str(minor).pad_zeros(2) + str(patch).pad_zeros(2))
 
 	dict.merge({
