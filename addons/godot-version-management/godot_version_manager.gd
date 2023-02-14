@@ -77,9 +77,15 @@ func _update_export_presets() -> void:
 			export_config.set_value(section + ".options", 'application/short_version', version_setting)
 			export_config.set_value(section + ".options", 'application/version', build_setting)
 
+		# Update UWP exports configs
 		if export_config.get_value(section, "platform") == "UWP":
-			# TODO parsing of version to minor/major
-			pass
+			var version_dict := _parse_version(version_setting)
+
+			if version_dict.size() > 0:
+				export_config.set_value(section + ".options", 'version/major', version_dict["major"])
+				export_config.set_value(section + ".options", 'version/minor', version_dict["minor"])
+				export_config.set_value(section + ".options", 'version/build', version_dict["patch"])
+				export_config.set_value(section + ".options", 'version/revision', 0)
 
 		# Update Windows exports configs
 		if export_config.get_value(section, "platform") == "Windows Desktop":
@@ -102,4 +108,17 @@ func _plugin_log(message: String) -> void:
 		var time := Time.get_datetime_dict_from_system()
 		var date_string := "%02d:%02d" % [time.hour, time.minute]
 		print(date_string, " - ", PLUGIN_NAME, " - ", message)
+
+
+func _parse_version(version: String) -> Dictionary:
+	var version_split := version.split(".")
+
+	if version_split.size() < 3:
+		return {}
+
+	return {
+		"major": int(version_split[0]),
+		"minor": int(version_split[1]),
+		"patch": int(version_split[2]),
+	}
 
