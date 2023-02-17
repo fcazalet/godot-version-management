@@ -64,6 +64,12 @@ Because of Godot keep in memory ExportsSettings and do not reload it from export
 
 When project is loaded Godot load in memory the export-presets.cfg .
 
+
+## Contributors
+
+Thanks to @joelgomes1994 for code refactoring and Windows export feature.
+
+
 ## Support Me
 
 You to buy me a coffee ?
