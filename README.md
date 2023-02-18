@@ -67,7 +67,7 @@ When project is loaded Godot load in memory the export-presets.cfg .
 
 ## Contributors
 
-Thanks to @joelgomes1994 for code refactoring and Windows export feature.
+Thanks to [@joelgomes1994](https://github.com/joelgomes1994) for code refactoring and Windows export feature.
 
 
 ## Support Me
